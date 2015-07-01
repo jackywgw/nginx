@@ -1,6 +1,10 @@
 include $(AEROS_ROOT)/build/ahcommonpre.mk
 AH_NGINX_VERSION=1.8.0
-AH_NGINX_SUBDIR=dhcp-$(AH_NGINX_VERSION)
+AH_PCRE_VERSION=2-10.10
+AH_ZLIB_VERSION=1.2.8
+AH_NGINX_SUBDIR=nginx-$(AH_NGINX_VERSION)
+AH_PCRE_SUBDIR=pcre$(AH_PCRE_VERSION)
+AH_ZLIB_SUBDIR=zlib-$(AH_ZLIB_VERSION)
 AH_SRC_NGINX_DIR=$(CURDIR)/$(AH_NGINX_SUBDIR)
 AH_BUILD_NGINX_DIR=$(AH_CURRENT_BUILD_PATH)/$(AH_NGINX_SUBDIR)
 echo "AH_BUILD_NGINX_DIR=$AH_BUILD_NGINX_DIR"
@@ -14,14 +18,14 @@ DEPDIRS += $(AEROS_ROOT)/app/auth2/libs/rmc_lib
 else
 DEPDIRS += $(AEROS_ROOT)/app/auth/rmc_lib
 endif
-define CfgDhcp
+define CfgNginx
 		echo "AH_EXPORT_LDFLAGS=$(AH_EXPORT_LDFLAGS)"
         if [ ! -f $(AH_BUILD_NGINX_DIR)/Makefile ]; then \
                 cd $(AH_BUILD_NGINX_DIR); \
                 $(AH_SRC_NGINX_DIR)/configure --prefix=/usr/local/nginx/ \
 						--sbin-path=/usr/local/nginx/nginx --conf-path=/usr/local/nginx/ \
 						--pid-path=/usr/local/nginx/nginx.pid --with-http_ssl_module \
-                        --with-pcre=../pcre-8.36 --with-zlib=../zlib-1.2.8\
+                        --with-pcre=../$(AH_PCRE_SUBDIR) --with-zlib=../$(AH_ZLIB_SUBDIR)\
                         --with-cc=powerpc-linux-gnu-gcc\
                         --with-cc-opt="-I$(AH_BUILD_TREE_ROOT)/app/openssl/openssl/include \
                                   -I$(AEROS_ROOT)/include/share \
@@ -40,7 +44,9 @@ endif
 	@$(InitAhInst)
 	@$(AH_MKDIR) $(AH_BUILD_NGINX_DIR)
 	$(AH_CP) -rf $(AH_NGINX_SUBDIR)/* $(AH_BUILD_NGINX_DIR)/
-	$(CfgDhcp)
+	$(AH_CP) -rf $(AH_PCRE_SUBDIR)/ $(AH_CURRENT_BUILD_PATH)/$(AH_PCRE_SUBDIR)/
+	$(AH_CP) -rf $(AH_ZLIB_SUBDIR)/ $(AH_CURRENT_BUILD_PATH)/$(AH_ZLIB_SUBDIR)/
+	$(CfgNginx)
 	$(AH_MAKE) -C $(AH_BUILD_NGINX_DIR)
 	$(AH_MAKE) -C $(AH_BUILD_NGINX_DIR) DESTDIR=$(AH_ROOTFS_DIR)/nginx install
 	$(AH_MKDIR) $(AH_ROOTFS_DIR)/opt/ah/bin
