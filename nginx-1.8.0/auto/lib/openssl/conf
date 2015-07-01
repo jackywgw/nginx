@@ -53,8 +53,8 @@ else
         ngx_feature_path=
         ngx_feature_libs="-lssl -lcrypto"
         ngx_feature_test="SSL_library_init()"
-        . auto/feature
-
+        #. auto/feature
+        ngx_found=yes
         if [ $ngx_found = yes ]; then
             have=NGX_SSL . auto/have
             CORE_LIBS="$CORE_LIBS $ngx_feature_libs $NGX_LIBDL"
@@ -65,7 +65,7 @@ else
     if [ $OPENSSL != YES ]; then
 
 cat << END
-
+ngx_feature_run=$ngx_feature_run
 $0: error: SSL modules require the OpenSSL library.
 You can either do not enable the modules, or install the OpenSSL library
 into the system, or build the OpenSSL library statically from the source
