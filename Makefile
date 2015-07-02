@@ -23,7 +23,7 @@ define CfgNginx
 		echo "AH_EXPORT_LDFLAGS=$(AH_EXPORT_LDFLAGS)"
         if [ ! -f $(AH_BUILD_NGINX_DIR)/Makefile ]; then \
                 cd $(AH_BUILD_NGINX_DIR); \
-                $(AH_SRC_NGINX_DIR)/configure --prefix=/usr/local/nginx/ \
+                $(AH_SRC_NGINX_DIR)/configure --prefix=/usr/local/nginx \
 						--sbin-path=/usr/local/nginx/nginx --conf-path=/usr/local/nginx/ \
 						--pid-path=/usr/local/nginx/nginx.pid --with-http_ssl_module \
                         --with-pcre=$(AH_CURRENT_BUILD_PATH)/$(AH_PCRE_SUBDIR) --with-zlib=$(AH_CURRENT_BUILD_PATH)/$(AH_ZLIB_SUBDIR)\
