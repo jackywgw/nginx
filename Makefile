@@ -24,10 +24,17 @@ define CfgNginx
         if [ ! -f $(AH_BUILD_NGINX_DIR)/Makefile ]; then \
                 cd $(AH_BUILD_NGINX_DIR); \
                 $(AH_SRC_NGINX_DIR)/configure --prefix=/usr/local/nginx \
-						--sbin-path=/usr/local/nginx/nginx --conf-path=/usr/local/nginx/ \
-						--pid-path=/usr/local/nginx/nginx.pid --with-http_ssl_module \
+						--user=root\
+						--sbin-path=/usr/local/nginx/nginx --conf-path=/usr/local/nginx/nginx.conf \
+						--pid-path=/var/log/nginx.pid --with-http_ssl_module \
+						--error-log-path=/var/log/error.log --http-log-path=/var/log/access.log\
                         --with-pcre=$(AH_CURRENT_BUILD_PATH)/$(AH_PCRE_SUBDIR) --with-zlib=$(AH_CURRENT_BUILD_PATH)/$(AH_ZLIB_SUBDIR)\
                         --with-openssl=$(AH_BUILD_TREE_ROOT)/app/openssl/openssl --with-cc=powerpc-linux-gnu-gcc\
+						--http-client-body-temp-path=/tmp/client_body_temp\
+						--http-proxy-temp-path=/tmp/proxy_temp\
+						--http-fastcgi-temp-path=/tmp/fastcgi_temp\
+						--http-uwsgi-temp-path=/tmp/uwsgi_tmp\
+						--http-scgi-temp-path=/tmp/scgi_tmp\
                         --with-cc-opt="-I$(AH_BUILD_TREE_ROOT)/app/openssl/openssl/include \
                                   -I$(AEROS_ROOT)/include/share \
                                   -I$(AEROS_ROOT)/include/user \
@@ -52,7 +59,10 @@ endif
 	$(AH_MAKE) -C $(AH_BUILD_NGINX_DIR) DESTDIR=$(AH_ROOTFS_DIR)/nginx install
 	$(AH_MKDIR) $(AH_ROOTFS_DIR)/opt/ah/bin
 	$(AH_MV) $(AH_ROOTFS_DIR)/nginx/usr/local/nginx/nginx $(AH_ROOTFS_DIR)/opt/ah/bin/ah_nginx
+	$(AH_CP) -rf $(AH_ROOTFS_DIR)/nginx/usr/local/nginx/* $(AH_ROOTFS_DIR)/usr/local/nginx/
+	#$(AH_MV) $(AH_ROOTFS_DIR)/nginx/var/log/ $(AH_ROOTFS_DIR)/var/log/nginx/
 	$(AH_TARGET_STRIP) $(AH_ROOTFS_DIR)/opt/ah/bin/ah_nginx
+	$(AH_RMDIR) $(AH_ROOTFS_DIR)/nginx
 lib:
 
 bin:
@@ -63,11 +73,14 @@ install:
 	$(AH_MAKE) -C $(AH_BUILD_NGINX_DIR) DESTDIR=$(AH_ROOTFS_DIR)/nginx install
 	$(AH_MKDIR) $(AH_ROOTFS_DIR)/opt/ah/bin
 	$(AH_MV) $(AH_ROOTFS_DIR)/nginx/usr/local/nginx/nginx $(AH_ROOTFS_DIR)/opt/ah/bin/ah_nginx
-	$(AH_TARGET_STRIP) $(AH_ROOTFS_DIR)/opt/ah/bin/ah_nginx
-
+	$(AH_CP) -rf $(AH_ROOTFS_DIR)/nginx/usr/local/nginx/ $(AH_ROOTFS_DIR)/usr/local/nginx/
+	#$(AH_MV) $(AH_ROOTFS_DIR)/nginx/var/log/ $(AH_ROOTFS_DIR)/var/log/nginx/
+	#$(AH_MV) $(AH_ROOTFS_DIR)/nginx/var/log/ $(AH_ROOTFS_DIR)/var/log/nginx/
+	$(AH_TARGET_STRIP) $(AH_ROOTFS_DIR)/opt/ah/bin/AH_NGINX_VERSION
+	$(AH_RMDIR) $(AH_ROOTFS_DIR)/nginx
 clean:
 	if [ -f $(AH_BUILD_NGINX_DIR)/Makefile ]; then \
-		$(AH_MAKE) -C $(AH_BUILD_NGINX_DIR) distclean; \
+		$(AH_MAKE) -C $(AH_BUILD_NGINX_DIR) clean; \
 	fi;
 instclean:
 	@$(CleanAhInst)
