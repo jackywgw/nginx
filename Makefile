@@ -59,7 +59,7 @@ endif
 	$(AH_MAKE) -C $(AH_BUILD_NGINX_DIR) DESTDIR=$(AH_ROOTFS_DIR)/nginx install
 	$(AH_MKDIR) $(AH_ROOTFS_DIR)/opt/ah/bin
 	$(AH_MV) $(AH_ROOTFS_DIR)/nginx/usr/local/nginx/nginx $(AH_ROOTFS_DIR)/opt/ah/bin/ah_nginx
-	$(AH_CP) -rf $(AH_ROOTFS_DIR)/nginx/usr/local/nginx/* $(AH_ROOTFS_DIR)/usr/local/nginx/
+	$(AH_CP) -rf $(AH_ROOTFS_DIR)/nginx/usr/local/nginx/ $(AH_ROOTFS_DIR)/usr/local/
 	#$(AH_MV) $(AH_ROOTFS_DIR)/nginx/var/log/ $(AH_ROOTFS_DIR)/var/log/nginx/
 	$(AH_TARGET_STRIP) $(AH_ROOTFS_DIR)/opt/ah/bin/ah_nginx
 	$(AH_RMDIR) $(AH_ROOTFS_DIR)/nginx
@@ -73,10 +73,10 @@ install:
 	$(AH_MAKE) -C $(AH_BUILD_NGINX_DIR) DESTDIR=$(AH_ROOTFS_DIR)/nginx install
 	$(AH_MKDIR) $(AH_ROOTFS_DIR)/opt/ah/bin
 	$(AH_MV) $(AH_ROOTFS_DIR)/nginx/usr/local/nginx/nginx $(AH_ROOTFS_DIR)/opt/ah/bin/ah_nginx
-	$(AH_CP) -rf $(AH_ROOTFS_DIR)/nginx/usr/local/nginx/ $(AH_ROOTFS_DIR)/usr/local/nginx/
+	$(AH_CP) -rf $(AH_ROOTFS_DIR)/nginx/usr/local/nginx/ $(AH_ROOTFS_DIR)/usr/local/
 	#$(AH_MV) $(AH_ROOTFS_DIR)/nginx/var/log/ $(AH_ROOTFS_DIR)/var/log/nginx/
 	#$(AH_MV) $(AH_ROOTFS_DIR)/nginx/var/log/ $(AH_ROOTFS_DIR)/var/log/nginx/
-	$(AH_TARGET_STRIP) $(AH_ROOTFS_DIR)/opt/ah/bin/AH_NGINX_VERSION
+	$(AH_TARGET_STRIP) $(AH_ROOTFS_DIR)/opt/ah/bin/ah_nginx
 	$(AH_RMDIR) $(AH_ROOTFS_DIR)/nginx
 clean:
 	if [ -f $(AH_BUILD_NGINX_DIR)/Makefile ]; then \
